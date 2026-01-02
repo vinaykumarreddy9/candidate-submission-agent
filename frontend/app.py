@@ -236,10 +236,15 @@ if st.session_state.workflow_result:
     # Outreach Draft Preview & Approval
     if workflow_result.get("outreach_email_draft"):
         st.markdown("### 📧 Generated Outreach Proposal")
-        st.info(f"Target Recipient identified: **{workflow_result.get('target_contact_email', 'None')}**")
+        
+        target_email = workflow_result.get("target_contact_email", "")
+        # Robust check for email validity
+        display_email = target_email if "@" in str(target_email) else "Not Identified"
+        
+        st.info(f"Target Recipient identified: **{display_email}**")
         st.code(workflow_result.get("outreach_email_draft"), language="markdown")
         
-        if st.session_state.pending_approval and workflow_result.get("target_contact_email") != "None":
+        if st.session_state.pending_approval and "@" in str(target_email):
             st.warning("⚠️ **Human-in-the-Loop Confirmation Required**")
             col_acc, col_rej = st.columns([1, 1])
             
@@ -268,7 +273,11 @@ if st.session_state.workflow_result:
         elif workflow_result.get("outreach_email_status") == "Delivered":
             st.success("✅ This outreach has been delivered to the target recipient.")
         else:
-            st.info("Outreach generation skipped or target email not found.")
+            status = workflow_result.get("outreach_email_status", "Unknown")
+            if "Failed" in status or "Failure" in status or "Simulation" in status:
+                st.error(f"❌ Outreach Delivery Problem: {status}")
+            else:
+                st.info(f"ℹ️ Status: {status}")
 
 st.divider()
 st.caption("Powered by DIGOT AI | Orchestrated with LangGraph & Groq (Llama 3.3)")
