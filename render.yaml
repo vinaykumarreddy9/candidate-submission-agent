@@ -27,3 +27,9 @@ services:
         value: http://localhost:8000
       - key: PYTHON_VERSION
         value: 3.10.0
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: "true"
+      - key: STREAMLIT_SERVER_ENABLE_CORS
+        value: "false"
+      - key: STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION
+        value: "false"
