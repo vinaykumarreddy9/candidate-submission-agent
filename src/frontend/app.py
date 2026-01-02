@@ -27,6 +27,13 @@ DEFAULT_BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 API_ENDPOINT = "/api/v1/recruitment/execute"
 APPROVE_ENDPOINT = "/api/v1/recruitment/approve"
 
+# Professional headers to prevent bot-detection blocks
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+}
+
 # --- SESSION STATE INITIALIZATION ---
 if 'workflow_result' not in st.session_state:
     st.session_state.workflow_result = None
@@ -185,9 +192,9 @@ if st.button("🚀 EXECUTE RECRUITMENT WORKFLOW"):
                         "candidate_profiles": profile_list
                     }
                     
-                    # API Request
+                    # API Request with professional headers
                     api_call_url = f"{backend_url_input}{API_ENDPOINT}"
-                    response = requests.post(api_call_url, json=payload, timeout=60)
+                    response = requests.post(api_call_url, json=payload, headers=HEADERS, timeout=60)
                     
                     if response.status_code == 200:
                         st.session_state.workflow_result = response.json()
@@ -241,7 +248,7 @@ if st.session_state.workflow_result:
                     try:
                         approve_payload = {"state": workflow_result.get("full_state", {})}
                         approve_url = f"{backend_url_input}{APPROVE_ENDPOINT}"
-                        res = requests.post(approve_url, json=approve_payload)
+                        res = requests.post(approve_url, json=approve_payload, headers=HEADERS)
                         
                         if res.status_code == 200:
                             st.session_state.workflow_result = res.json()
