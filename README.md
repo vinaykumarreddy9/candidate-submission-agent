@@ -321,7 +321,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### ⭐ Star this repo if you find it useful!
 
-**Built with ❤️ by DIGOT AI**
+**Built with ❤️ by DIGIOT AI**
 
 [Report Bug](https://github.com/vinaykumarreddy9/candidate-submission-agent/issues) • [Request Feature](https://github.com/vinaykumarreddy9/candidate-submission-agent/issues)
 
