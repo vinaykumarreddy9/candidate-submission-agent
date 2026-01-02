@@ -13,6 +13,7 @@ import os
 import sys
 from typing import List
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -31,6 +32,16 @@ app = FastAPI(
     title="DIGOT AI - Recruitment Pipeline API",
     description="High-performance multi-agent system for candidate screening and outreach.",
     version="1.0.0"
+)
+
+# --- CORS MIDDLEWARE ---
+# Enables secure cross-origin requests (essential for production APIs)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
 )
 
 # --- DATA TRANSFER OBJECTS (DTOs) ---
