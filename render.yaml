@@ -9,7 +9,7 @@ services:
     plan: free
     branch: main
     buildCommand: pip install -r requirements.txt
-    startCommand: bash src/start.sh
+    startCommand: bash start.sh
     envVars:
       - key: GROQ_API_KEY
         sync: false
