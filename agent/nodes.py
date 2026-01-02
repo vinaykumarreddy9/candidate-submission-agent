@@ -226,15 +226,22 @@ async def deliver_outreach_node(state: WorkflowState) -> WorkflowState:
             print("⚠️ Transmission blocked: Awaiting human approval.")
             return {"email_delivery_status": "Blocked: Awaiting Human Approval"}
 
+        # Robust Email Extraction: LLMs sometimes return "Email: contact@domain.com"
+        # We use regex to isolate only the email address for SMTP compatibility
+        import re
+        email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        match = re.search(email_pattern, target_email)
+        cleaned_email = match.group(0) if match else ""
+
         # Validate transmission metadata
-        if not target_email or not email_body:
-            print("❌ Transmission failed: Missing email metadata.")
-            return {"email_delivery_status": "Failed: Missing metadata for transmission"}
+        if not cleaned_email or not email_body:
+            print(f"❌ Transmission failed: Missing/Invalid email metadata. (Extracted: '{cleaned_email}')")
+            return {"email_delivery_status": f"Failed: Invalid target email ('{target_email}')"}
 
         # Orchestrate SMTP Delivery
         delivery_report = execute_smtp_transmission(
-            recipient=target_email, 
-            subject="Qualified Technical Matches - DIGOT AI Recruitment Analysis", 
+            recipient=cleaned_email, 
+            subject="Qualified Technical Matches - DIGIOT AI Recruitment Analysis", 
             body=email_body
         )
 
