@@ -79,7 +79,7 @@ recruitment_workflow = initialize_recruitment_workflow()
 
 # --- API ENDPOINTS ---
 
-@app.get("/health")
+@app.get("/")
 async def health_check():
     """Service health monitoring."""
     return {"status": "healthy", "service": "DIGOT AI Recruitment API"}
