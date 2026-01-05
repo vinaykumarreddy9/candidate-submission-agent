@@ -48,8 +48,7 @@ app.add_middleware(
 
 class PipelineRequestDTO(BaseModel):
     """Schema for incoming recruitment requests."""
-    job_description: str
-    candidate_profiles: List[str] 
+    user_query: str
 
 class CandidateEvaluationDTO(BaseModel):
     """Schema for reporting individual candidate evaluation results."""
@@ -89,16 +88,18 @@ async def execute_recruitment_flow(request: PipelineRequestDTO):
     """
     Primary endpoint to trigger the AI-driven recruitment orchestrator.
     """
-    if not request.job_description or not request.candidate_profiles:
+    if not request.user_query:
         raise HTTPException(
             status_code=400, 
-            detail="Incomplete request: Both Job Description and Candidate Profiles are required."
+            detail="Incomplete request: User query is required."
         )
 
     # Transform request to initial WorkflowState
     workflow_input = {
-        "job_description": request.job_description,
-        "raw_candidate_profiles": request.candidate_profiles,
+        "user_query": request.user_query,
+        "job_description": "",
+        "generation_prompt": "",
+        "raw_candidate_profiles": [],
         "processed_evaluations": [],
         "qualified_matches": [],
         "target_contact_email": "",
@@ -124,7 +125,7 @@ async def execute_recruitment_flow(request: PipelineRequestDTO):
         ]
         
         return WorkflowResponseDTO(
-            total_processed=len(request.candidate_profiles),
+            total_processed=len(execution_result.get("raw_candidate_profiles", [])),
             matched_count=len(qualified_matches_data),
             qualified_matches=qualified_matches_data,
             outreach_email_status=execution_result.get("email_delivery_status", "Unknown"),

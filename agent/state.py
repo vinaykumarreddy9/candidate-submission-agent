@@ -18,7 +18,9 @@ class CandidateEvaluation(TypedDict):
 
 class WorkflowState(TypedDict):
     """Maintains the global state of the recruitment pipeline across all nodes."""
+    user_query: str
     job_description: str
+    generation_prompt: str
     raw_candidate_profiles: List[str]
     processed_evaluations: List[CandidateEvaluation]
     qualified_matches: List[CandidateEvaluation]
